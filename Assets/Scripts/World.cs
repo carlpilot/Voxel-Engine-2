@@ -27,6 +27,7 @@ public class World : MonoBehaviour {
         c.x = x;
         c.y = y;
         c.InitVoxels ();
+        c.gameObject.transform.position = new Vector3 (x * chunkWidth, 0f, y * chunkWidth);
 
         while(!c.voxelsInitialised) {
             yield return new WaitForEndOfFrame ();
@@ -37,18 +38,21 @@ public class World : MonoBehaviour {
     }
 
     public Voxel PositionToVoxel (Vector3 position) {
-        if (position.y < 0) return null;
+        if (position.y < 0 || position.y >= chunkHeight) return null;
 
-        int chunkX = Mathf.FloorToInt (position.x / (float)World.chunkWidth);
-        int chunkY = Mathf.FloorToInt (position.z / (float)World.chunkWidth);
+        int chunkX = Mathf.FloorToInt (position.x / (float)chunkWidth);
+        int chunkY = Mathf.FloorToInt (position.z / (float)chunkWidth);
 
-        int voxelX = Mathf.FloorToInt (position.x - chunkX);
+        int voxelX = Mathf.FloorToInt (position.x - chunkX * chunkWidth);
         int voxelY = Mathf.FloorToInt (position.y);
-        int voxelZ = Mathf.FloorToInt (position.z - chunkY);
+        int voxelZ = Mathf.FloorToInt (position.z - chunkY * chunkWidth);
+
+        //print (chunkX + "," + chunkY + " :: " + voxelX + "," + voxelY + "," + voxelZ);
 
         if (    chunks.ContainsKey (new Vector2 (chunkX, chunkY)) &&
                 chunks[new Vector2 (chunkX, chunkY)].gameObject.activeInHierarchy &&
-                chunks[new Vector2 (chunkX, chunkY)].voxels != null
+                chunks[new Vector2 (chunkX, chunkY)].voxels != null &&
+                chunks[new Vector2(chunkX, chunkY)].voxels[voxelX, voxelY, voxelZ] != null
            ) {
 
             return chunks[new Vector2 (chunkX, chunkY)].voxels[voxelX, voxelY, voxelZ];
@@ -58,6 +62,7 @@ public class World : MonoBehaviour {
     }
 
     public Vector3 VoxelToPosition (Voxel v) {
+        if (v == null) return Vector3.zero;
         return new Vector3 (v.x + v.parent.x * World.chunkWidth, v.y, v.z + v.parent.y * chunkWidth);
     }
 

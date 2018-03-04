@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class WorldGen : MonoBehaviour {
 
+    public static float seed = 6789f;
+
     public static float scale = 0.01f;
     public static float height = 50f;
     public static float heightBuffer = 20;
@@ -14,6 +16,6 @@ public class WorldGen : MonoBehaviour {
     }
 
     public static float SampleHeight (int x, int z) {
-        return Noise.Get ((x + 0.5f) * scale, (z + 0.5f) * scale) * height + heightBuffer;
+        return Noise.Get ((x + 0.5f) * scale + seed, (z + 0.5f) * scale + seed) * height + heightBuffer;
     }
 }

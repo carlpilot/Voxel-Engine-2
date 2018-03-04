@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Test_Break : MonoBehaviour {
 
-    public int rightClickBreakRadius;
+    public int rightClickRadius;
 
 	void Update () {
 		if(Input.GetMouseButtonDown(0)) {
@@ -21,14 +21,17 @@ public class Test_Break : MonoBehaviour {
 
             List<Chunk> chunksToReload = new List<Chunk> ();
 
-            for(int i = -rightClickBreakRadius; i <= rightClickBreakRadius; i++) {
-                for (int j = -rightClickBreakRadius; j <= rightClickBreakRadius; j++) {
-                    for (int k = -rightClickBreakRadius; k <= rightClickBreakRadius; k++) {
-                        if (Vector3.Distance (Vector3.zero, new Vector3 (i, j, k)) <= rightClickBreakRadius) {
-                            if (World.instance.PositionToVoxel (pos + new Vector3 (i, j, k)) != null) {
-                                World.instance.PositionToVoxel (pos + new Vector3 (i, j, k)).id = 0;
-                                if (!chunksToReload.Contains (World.instance.PositionToVoxel (pos + new Vector3 (i, j, k)).parent)) {
-                                    chunksToReload.Add (World.instance.PositionToVoxel (pos + new Vector3 (i, j, k)).parent);
+            for(int i = -rightClickRadius; i <= rightClickRadius; i++) {
+                for (int j = -rightClickRadius; j <= rightClickRadius; j++) {
+                    for (int k = -rightClickRadius; k <= rightClickRadius; k++) {
+                        if (Vector3.Distance (Vector3.zero, new Vector3 (i, j, k)) <= rightClickRadius) {
+
+                            Voxel v2 = World.instance.PositionToVoxel (pos + new Vector3 (i, j, k));
+
+                            if (v2 != null) {
+                                v2.id = 0;
+                                if (!chunksToReload.Contains (v2.parent)) {
+                                    chunksToReload.Add (v2.parent);
                                 }
                             }
                         }
@@ -36,7 +39,36 @@ public class Test_Break : MonoBehaviour {
                 }
             }
 
-            foreach(Chunk c in chunksToReload) {
+            foreach (Chunk c in chunksToReload) {
+                c.Render ();
+            }
+        }
+
+        if (Input.GetKeyDown (KeyCode.B)) {
+
+            List<Chunk> chunksToReload = new List<Chunk> ();
+
+            for (int i = -rightClickRadius; i <= rightClickRadius; i++) {
+                for (int j = -rightClickRadius; j <= rightClickRadius; j++) {
+                    for (int k = -rightClickRadius; k <= rightClickRadius; k++) {
+
+                        if (Vector3.Distance (Vector3.zero, new Vector3 (i, j, k)) <= rightClickRadius) {
+
+                            Voxel v = World.instance.PositionToVoxel (transform.position + new Vector3 (i, j, k));
+
+                            if (v != null) {
+                                v.id = 4;
+                                if (!chunksToReload.Contains (v.parent)) {
+                                    chunksToReload.Add (v.parent);
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+
+            foreach (Chunk c in chunksToReload) {
                 c.Render ();
             }
         }
