@@ -47,13 +47,13 @@ public class Chunk : MonoBehaviour {
         bool isDone = false;
         ChunkMeshObject cmo = null;
 
-        Thread t = new Thread (() => {
+        //Thread t = new Thread (() => {
             cmo = ChunkBuilder.BuildChunk (this);
             isDone = true;
-        });
-        t.Start ();
+        //});
+        //t.Start ();
 
-        while(!isDone) {
+        while (!isDone) {
             yield return new WaitForEndOfFrame ();
         }
 
@@ -67,8 +67,12 @@ public class Chunk : MonoBehaviour {
         m.RecalculateNormals ();
         m.RecalculateTangents ();
 
-        this.gameObject.AddComponent<MeshFilter> ().mesh = m;
-        this.gameObject.AddComponent<MeshRenderer> ().material = World.instance.material;
+        if (GetComponent<MeshFilter> () == null) {
+            this.gameObject.AddComponent<MeshFilter> ().mesh = m;
+            this.gameObject.AddComponent<MeshRenderer> ().material = World.instance.material;
+        } else {
+            GetComponent<MeshFilter> ().mesh = m;
+        }
 
         Debug.Log ("Chunk " + x + "," + y + " renderered");
     }

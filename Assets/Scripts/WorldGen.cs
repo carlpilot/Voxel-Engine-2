@@ -10,7 +10,7 @@ public class WorldGen : MonoBehaviour {
 
 	public static int Get (int x, int y, int z) {
         int heightAtPoint = Mathf.RoundToInt (SampleHeight (x, z));
-        return y > heightAtPoint ? 0 : 1;
+        return y > heightAtPoint ? 0 : (y == heightAtPoint) ? 3 : (y > heightAtPoint - 3) ? 2 : 1;
     }
 
     public static float SampleHeight (int x, int z) {

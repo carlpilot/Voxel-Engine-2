@@ -368,6 +368,7 @@
     <Compile Include="Assets\Scripts\ScriptableObjects\TextureScriptable.cs" />
     <Compile Include="Assets\Scripts\ScriptableObjects\VoxelTexture.cs" />
     <Compile Include="Assets\Scripts\SimpleSmoothMouseLook.cs" />
+    <Compile Include="Assets\Scripts\Test_Break.cs" />
     <Compile Include="Assets\Scripts\Voxel.cs" />
     <Compile Include="Assets\Scripts\World.cs" />
     <Compile Include="Assets\Scripts\WorldGen.cs" />
