@@ -57,6 +57,10 @@ public class World : MonoBehaviour {
         }
     }
 
+    public Vector3 VoxelToPosition (Voxel v) {
+        return new Vector3 (v.x + v.parent.x * World.chunkWidth, v.y, v.z + v.parent.y * chunkWidth);
+    }
+
     public Voxel RaycastVoxel (Vector3 position, Vector3 direction) {
         bool hasFound = false;
         int i = 0;
@@ -65,7 +69,7 @@ public class World : MonoBehaviour {
             Vector3 searchPosition = position + (i * direction.normalized * step);
             if(PositionToVoxel(searchPosition) != null && PositionToVoxel(searchPosition).id != 0) { // don't break air blocks
                 hasFound = true;
-                print (PositionToVoxel (searchPosition).id + " at " + searchPosition);
+                //print (PositionToVoxel (searchPosition).id + " at " + searchPosition);
                 return PositionToVoxel (searchPosition);
             }
             i++;
