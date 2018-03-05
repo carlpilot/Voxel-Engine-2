@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class World : MonoBehaviour {
@@ -7,7 +8,7 @@ public class World : MonoBehaviour {
     public static World instance;
 
     public static int chunkWidth = 16;
-    public static int chunkHeight = 256;
+    public static int chunkHeight = 64;
     public Material material;
 
     public TextureScriptable textureScriptable;
@@ -24,6 +25,76 @@ public class World : MonoBehaviour {
         if(loadQueue.Count > 0 && !chunksBeingGenerated.Contains(loadQueue[0])) {
             LoadChunkFromQueue ((int)loadQueue[0].x, (int)loadQueue[0].y);
         }
+    }
+
+    public void ChangeVoxel (int x, int y, int z, int id) {
+        ChangeVoxel (PositionToVoxel (new Vector3 (x, y, z)), id);
+    }
+
+    public void ChangeVoxel (Voxel v, int id) {
+        ChangeVoxelWithoutReload (v, id);
+        ReRenderVoxelChunks (v);
+    }
+
+    public void ChangeVoxelWithoutReload (int x, int y, int z, int id) {
+        ChangeVoxelWithoutReload (PositionToVoxel (new Vector3 (x, y, z)), id);
+    }
+
+    public void ChangeVoxelWithoutReload (Voxel v, int id) {
+        if (v != null)
+            v.id = id;
+    }
+
+    public void ChangeVoxels (Voxel[] v, int id) {
+        List<Chunk> chunksToReload = new List<Chunk> ();
+        foreach (Voxel vox in v) {
+            if (v != null) {
+                ChangeVoxelWithoutReload (vox, id);
+                List<Chunk> chunksToReloadForThisVoxel = GetChunksToReload (vox);
+                if (chunksToReloadForThisVoxel != null) {
+                    foreach (Chunk c in chunksToReloadForThisVoxel) {
+                        chunksToReload.Add (c);
+                    }
+                }
+            }
+        }
+
+        chunksToReload = chunksToReload.Distinct ().ToList ();
+
+        foreach (Chunk c in chunksToReload) {
+            c.Render ();
+        }
+    }
+
+    public void ReRenderVoxelChunks (Voxel v) {
+
+        if (v == null) return;
+
+        List<Chunk> chunksToReload = GetChunksToReload (v);
+        foreach(Chunk c in chunksToReload) {
+            c.Render ();
+        }
+    }
+
+    public List<Chunk> GetChunksToReload (Voxel v) {
+
+        if (v == null) return null;
+
+        List<Chunk> chunksToReload = new List<Chunk> ();
+        chunksToReload.Add (v.parent);
+        if (v.x == 0 && chunks.ContainsKey (new Vector2 (v.parent.x - 1, v.parent.y))) {
+            chunksToReload.Add (chunks[new Vector2 (v.parent.x - 1, v.parent.y)]);
+        }
+        if (v.x == chunkWidth - 1 && chunks.ContainsKey (new Vector2 (v.parent.x + 1, v.parent.y))) {
+            chunksToReload.Add (chunks[new Vector2 (v.parent.x + 1, v.parent.y)]);
+        }
+        if (v.y == 0 && chunks.ContainsKey (new Vector2 (v.parent.x, v.parent.y - 1))) {
+            chunksToReload.Add (chunks[new Vector2 (v.parent.x, v.parent.y - 1)]);
+        }
+        if (v.y == chunkWidth - 1 && chunks.ContainsKey (new Vector2 (v.parent.x, v.parent.y + 1))) {
+            chunksToReload.Add (chunks[new Vector2 (v.parent.x, v.parent.y + 1)]);
+        }
+        return chunksToReload;
     }
 
     public void GenerateChunk (int x, int y) {
