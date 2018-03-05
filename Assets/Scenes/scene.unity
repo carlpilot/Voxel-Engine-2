@@ -282,12 +282,12 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 546673291}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c6cabef509853c145a617cbb501a1bfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 7
+  radius: 2
 --- !u!114 &546673294
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -301,6 +301,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: 73afa2da4291bb14f9487c4164806eee, type: 2}
   textureScriptable: {fileID: 11400000, guid: ec2447e325aa38f41a061605d630e02f, type: 2}
+  chunksBeingGenerated: []
+  loadQueue: []
 --- !u!1 &688183482
 GameObject:
   m_ObjectHideFlags: 0
@@ -315,6 +317,7 @@ GameObject:
   - component: {fileID: 688183487}
   - component: {fileID: 688183488}
   - component: {fileID: 688183489}
+  - component: {fileID: 688183490}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -427,6 +430,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rightClickRadius: 10
+--- !u!114 &688183490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 688183482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 408c0095982413b4d80bdb5094ec6e7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  radius: 8
 --- !u!1 &1214507531
 GameObject:
   m_ObjectHideFlags: 0

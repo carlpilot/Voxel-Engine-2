@@ -12,17 +12,52 @@ public class World : MonoBehaviour {
 
     public TextureScriptable textureScriptable;
 
+    public List<Vector2> chunksBeingGenerated = new List<Vector2> ();
     public Dictionary<Vector2, Chunk> chunks = new Dictionary<Vector2, Chunk> ();
+    public List<Vector2> loadQueue = new List<Vector2> ();
 
     void Awake () {
         if (instance == null) instance = this;
     }
 
+    private void Update () {
+        if(loadQueue.Count > 0 && !chunksBeingGenerated.Contains(loadQueue[0])) {
+            LoadChunkFromQueue ((int)loadQueue[0].x, (int)loadQueue[0].y);
+        }
+    }
+
     public void GenerateChunk (int x, int y) {
-        StartCoroutine (generateChunk (x, y));
+        if (!chunksBeingGenerated.Contains (new Vector2 (x, y))) {
+            StartCoroutine (generateChunk (x, y));
+        }
+    }
+
+    public void LoadChunk(int x, int y) {
+        if (!chunks.ContainsKey (new Vector2 (x, y)) && !loadQueue.Contains (new Vector2 (x, y))) { // Don't queue already loaded chunks or already queued chunks
+            loadQueue.Add (new Vector2 (x, y));
+        }
+    }
+
+    public void LoadChunkFromQueue (int x, int y) {
+        if(chunks.ContainsKey(new Vector2(x, y))) {
+            chunks[new Vector2 (x, y)].gameObject.SetActive (true);
+        } else {
+            GenerateChunk (x, y);
+        }
+    }
+
+    public void UnloadChunk (int x, int y) {
+        if (chunks.ContainsKey (new Vector2 (x, y))) {
+            Destroy (chunks[new Vector2 (x, y)].gameObject);//.SetActive (false);
+            chunks.Remove (new Vector2 (x, y));
+        }
+        if(loadQueue.Contains(new Vector2(x, y))) {
+            loadQueue.Remove (new Vector2 (x, y));
+        }
     }
 
     IEnumerator generateChunk (int x, int y) {
+        chunksBeingGenerated.Add (new Vector2 (x, y));
         Chunk c = new GameObject ("Chunk " + x + "," + y).AddComponent<Chunk> ();
         c.x = x;
         c.y = y;
@@ -35,6 +70,8 @@ public class World : MonoBehaviour {
 
         chunks.Add (new Vector2 (x, y), c);
         c.Render ();
+        chunksBeingGenerated.Remove (new Vector2 (x, y));
+        loadQueue.Remove (new Vector2 (x, y));
     }
 
     public Voxel PositionToVoxel (Vector3 position) {

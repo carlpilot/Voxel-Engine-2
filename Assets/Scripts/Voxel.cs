@@ -26,35 +26,59 @@ public class Voxel {
     public List<int> GetOpenFaces () {
         List<int> faces = new List<int> ();
 
-        if(id == 0) {
+        if (id == 0) {
             // Don't render faces on air blocks!
             return faces;
         }
 
         if (y == 0 || parent.voxels[x, y - 1, z].id == 0) {
             // Bottom
-            faces.Add (0);
+            if (y != 0) {
+                faces.Add (0);
+            } // Why render bottom faces on the bottom blocks?
         }
+
         if (y == World.chunkHeight - 1 || parent.voxels[x, y + 1, z].id == 0) {
             // Top
             faces.Add (1);
         }
+
         if (x == 0 || parent.voxels[x - 1, y, z].id == 0) {
             // Left
-            faces.Add (2);
+            if (x == 0 && World.instance.chunks.ContainsKey (new Vector2 (parent.x - 1, parent.y)) && World.instance.chunks[new Vector2 (parent.x - 1, parent.y)].voxels != null && World.instance.chunks[new Vector2 (parent.x - 1, parent.y)].voxels[World.chunkWidth - 1, y, z].id != 0) {
+                // Will be hidden
+            } else {
+                faces.Add (2);
+            }
         }
+
         if (x == World.chunkWidth - 1 || parent.voxels[x + 1, y, z].id == 0) {
             // Right
-            faces.Add (3);
+            if (x == World.chunkWidth - 1 && World.instance.chunks.ContainsKey (new Vector2 (parent.x + 1, parent.y)) && World.instance.chunks[new Vector2 (parent.x + 1, parent.y)].voxels != null && World.instance.chunks[new Vector2 (parent.x + 1, parent.y)].voxels[0, y, z].id != 0) {
+                // Will be hidden
+            } else {
+                faces.Add (3);
+            }
         }
+
         if (z == 0 || parent.voxels[x, y, z - 1].id == 0) {
             // Back
-            faces.Add (4);
+            if (z == 0 && World.instance.chunks.ContainsKey (new Vector2 (parent.x, parent.y - 1)) && World.instance.chunks[new Vector2 (parent.x, parent.y - 1)].voxels != null && World.instance.chunks[new Vector2 (parent.x, parent.y - 1)].voxels[x, y, World.chunkWidth - 1].id != 0) {
+                // Will be hidden
+            } else {
+                faces.Add (4);
+            }
         }
+
         if (z == World.chunkWidth - 1 || parent.voxels[x, y, z + 1].id == 0) {
             // Front
-            faces.Add (5);
+            if (z == World.chunkWidth - 1 && World.instance.chunks.ContainsKey (new Vector2 (parent.x, parent.y + 1)) && World.instance.chunks[new Vector2 (parent.x, parent.y + 1)].voxels != null && World.instance.chunks[new Vector2 (parent.x, parent.y + 1)].voxels[x, y, 0].id != 0) {
+                // Will be hidden
+            } else {
+                faces.Add (5);
+            }
         }
+
         return faces;
     }
 }

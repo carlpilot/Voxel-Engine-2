@@ -364,6 +364,7 @@
     <Compile Include="Assets\Scripts\ChunkMeshObject.cs" />
     <Compile Include="Assets\Scripts\FlyCamera.cs" />
     <Compile Include="Assets\Scripts\GenerateChunk.cs" />
+    <Compile Include="Assets\Scripts\LoadSurroundingChunks.cs" />
     <Compile Include="Assets\Scripts\Noise.cs" />
     <Compile Include="Assets\Scripts\ScriptableObjects\TextureScriptable.cs" />
     <Compile Include="Assets\Scripts\ScriptableObjects\VoxelTexture.cs" />

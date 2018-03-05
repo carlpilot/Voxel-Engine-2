@@ -16,7 +16,7 @@ public class Chunk : MonoBehaviour {
 
     IEnumerator initVoxels () {
 
-        Debug.Log ("Initialising voxels on chunk " + x + "," + y);
+        //Debug.Log ("Initialising voxels on chunk " + x + "," + y);
 
         Thread t = new Thread (() => {
             for (int i = 0; i < voxels.GetLength (0); i++) {
@@ -35,7 +35,7 @@ public class Chunk : MonoBehaviour {
             yield return null;
         }
 
-        Debug.Log ("Chunk " + x + "," + y + " initialised");
+        //Debug.Log ("Chunk " + x + "," + y + " initialised");
     }
 
     public void Render () {
@@ -43,18 +43,18 @@ public class Chunk : MonoBehaviour {
     }
 
     IEnumerator RenderChunk () {
-        Debug.Log ("Rendering chunk...");
+        //Debug.Log ("Rendering chunk...");
         bool isDone = false;
         ChunkMeshObject cmo = null;
 
-        //Thread t = new Thread (() => {
+        Thread t = new Thread (() => {
             cmo = ChunkBuilder.BuildChunk (this);
             isDone = true;
-        //});
-        //t.Start ();
+        });
+        t.Start ();
 
         while (!isDone) {
-            yield return new WaitForEndOfFrame ();
+            yield return null;
         }
 
         Mesh m = new Mesh ();
@@ -74,6 +74,6 @@ public class Chunk : MonoBehaviour {
             GetComponent<MeshFilter> ().mesh = m;
         }
 
-        Debug.Log ("Chunk " + x + "," + y + " renderered");
+        //Debug.Log ("Chunk " + x + "," + y + " renderered");
     }
 }
