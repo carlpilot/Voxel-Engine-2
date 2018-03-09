@@ -41,7 +41,7 @@ public class World : MonoBehaviour {
     }
 
     public void ChangeVoxelWithoutReload (Voxel v, int id) {
-        if (v != null)
+        if (v != null && v.id != 6)
             v.id = id;
     }
 

@@ -17,7 +17,7 @@ public class Test_Break : MonoBehaviour {
         }
 
         if (Input.GetKeyDown (KeyCode.B)) {
-            SetWithinClickRadius (4);
+            SetWithinClickRadius (5);
         }
 	}
 
